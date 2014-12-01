@@ -5,11 +5,22 @@ public class News {
 	private String title;
 	private String category;
 	private String hour;
+	private Long Id;
 	
 	public News(String title, String category, String hour) {
 		this.title = title;
 		this.category = category;
 		this.hour = hour;
+	}
+	
+	public News() {
+		
+	}
+	public Long getId() {
+		return Id;
+	}
+	public void setId(Long id) {
+		Id = id;
 	}
 	public String getTitle() {
 		return title;

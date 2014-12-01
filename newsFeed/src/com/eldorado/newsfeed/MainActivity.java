@@ -17,11 +17,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.eldorado.newsfeed.dao.ChannelDAO;
+import com.eldorado.newsfeed.dao.NewsDAO;
 import com.eldorado.newsfeed.model.Channel;
+import com.eldorado.newsfeed.model.News;
 
 public class MainActivity extends Activity {
 
@@ -31,6 +35,9 @@ public class MainActivity extends Activity {
 	private NewsAdapter mAdapter;
 	private ListView listView;
 	private ArrayList<Channel> channel;
+	
+	private ChannelDAO channelDao;
+	private NewsDAO newsDao;
 
 	// URL to get contacts JSON
 	private static String url = "http://www.melhordovolei.com.br/index.php/noticias/nacional?format=feed";
@@ -40,6 +47,12 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		channelDao = new ChannelDAO(this);
+		channelDao.open();
+		
+		newsDao = new NewsDAO(this);
+		newsDao.open();
 
 		listView = (ListView) findViewById(R.id.list);
 
@@ -104,14 +117,33 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
+			saveToDataBase();
 			// Dismiss the progress dialog
 			if (swipeLayout.isRefreshing()) {
 				swipeLayout.setRefreshing(false);
 			}
-			 mAdapter = new NewsAdapter(MainActivity.this, -1,channel);
+			 mAdapter = new NewsAdapter(MainActivity.this, -1,readFromDataBase());
 			 listView.setAdapter(mAdapter);
+			 
+			 readFromDataBase();
 		}
 
+	}
+	
+	private ArrayList<News> readFromDataBase() {
+		ArrayList<News> newss = new ArrayList<>(); 
+		newss = newsDao.getAllNews();
+		return newss;
+	}
+	
+	private void saveToDataBase() {
+		newsDao.deleteTableContent();
+		channelDao.deleteTableContent();
+		for (Channel chnl: channel) {
+			chnl.setName("channel1");
+			channelDao.createChannel(chnl.getName());
+			newsDao.createNews(chnl.getItem().getTitle(), chnl.getItem().getCategory(), chnl.getItem().getHour());
+		}
 	}
 
 	private boolean isNetworkAvailable() {
