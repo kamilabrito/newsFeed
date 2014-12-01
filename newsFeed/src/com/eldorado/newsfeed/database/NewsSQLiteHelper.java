@@ -2,39 +2,22 @@ package com.eldorado.newsfeed.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.eldorado.newsfeed.constants.Constants;
 
 public class NewsSQLiteHelper extends SQLiteOpenHelper {
 	 
-	private static final String DATABASE_NAME = "news_database";
-	private static final int DATABASE_VERSION = 1;
- 
-    // Table Names
-	public static final String TABLE_CHANNEL = "channel";
-    public static final String TABLE_NEWS = "news";
- 
-    // Common column names
-    public static final String KEY_ID = "id";
- 
-    //channel columns
-    public static final String KEY_NAME= "name";
- 
-    // news columns
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_CATEGORY = "category";
-    public static final String KEY_HOUR = "hour";
-    
     private static final String CREATE_TABLE_CHANNEL = "CREATE TABLE "
-            + TABLE_CHANNEL + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME
+            + Constants.TABLE_CHANNEL + "(" + Constants.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + Constants.KEY_NAME
             + " TEXT NOT NULL);";
 
     private static final String CREATE_TABLE_NEWS = "CREATE TABLE "
-            + TABLE_NEWS + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_TITLE
-            + " TEXT," + KEY_CATEGORY + " TEXT," + KEY_HOUR + " TEXT);";
+            + Constants.TABLE_NEWS + "(" + Constants.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + Constants.KEY_TITLE
+            + " TEXT," + Constants.KEY_CATEGORY + " TEXT," + Constants.KEY_HOUR_COLUMN + " TEXT);";
     
 	public NewsSQLiteHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
 	}
 
 	@Override

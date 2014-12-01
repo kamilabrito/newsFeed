@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.eldorado.newsfeed.constants.Constants;
 import com.eldorado.newsfeed.database.NewsSQLiteHelper;
 import com.eldorado.newsfeed.model.Channel;
 import com.eldorado.newsfeed.model.News;
@@ -18,7 +19,7 @@ public class NewsDAO {
 	// Database fields
 	private SQLiteDatabase database;
 	private NewsSQLiteHelper dbHelper;
-	private String[] allColumns = {NewsSQLiteHelper.KEY_TITLE, NewsSQLiteHelper.KEY_CATEGORY, NewsSQLiteHelper.KEY_HOUR};
+	private String[] allColumns = {Constants.KEY_TITLE, Constants.KEY_CATEGORY, Constants.KEY_HOUR_COLUMN};
 
 	public NewsDAO(Context context) {
 		dbHelper = new NewsSQLiteHelper(context);
@@ -34,13 +35,13 @@ public class NewsDAO {
 
 	public News createNews(String title, String category, String hour) {
 		ContentValues values = new ContentValues();
-		values.put(NewsSQLiteHelper.KEY_TITLE, title);
-		values.put(NewsSQLiteHelper.KEY_CATEGORY, category);
-		values.put(NewsSQLiteHelper.KEY_HOUR, hour);
-		long insertId = database.insert(NewsSQLiteHelper.TABLE_NEWS, null,
+		values.put(Constants.KEY_TITLE, title);
+		values.put(Constants.KEY_CATEGORY, category);
+		values.put(Constants.KEY_HOUR_COLUMN, hour);
+		long insertId = database.insert(Constants.TABLE_NEWS, null,
 				values);
-		Cursor cursor = database.query(NewsSQLiteHelper.TABLE_NEWS,
-				allColumns, NewsSQLiteHelper.KEY_ID + " = " + insertId, null,
+		Cursor cursor = database.query(Constants.TABLE_NEWS,
+				allColumns, Constants.KEY_ID + " = " + insertId, null,
 				null, null, null);
 		cursor.moveToFirst();
 		News newNews = cursorToNews(cursor);
@@ -51,14 +52,14 @@ public class NewsDAO {
 	public void deleteComment(News news) {
 		long id = news.getId();
 		System.out.println("Comment deleted with id: " + id);
-		database.delete(NewsSQLiteHelper.TABLE_NEWS, NewsSQLiteHelper.KEY_ID
+		database.delete(Constants.TABLE_NEWS, Constants.KEY_ID
 				+ " = " + id, null);
 	}
 
 	public ArrayList<News> getAllNews() {
 		ArrayList<News> newss = new ArrayList<>();
 
-		Cursor cursor = database.query(NewsSQLiteHelper.TABLE_NEWS,
+		Cursor cursor = database.query(Constants.TABLE_NEWS,
 				allColumns, null, null, null, null, null);
 
 		cursor.moveToFirst();
@@ -73,7 +74,7 @@ public class NewsDAO {
 	}
 	
 	public void deleteTableContent() {
-		database.delete(NewsSQLiteHelper.TABLE_NEWS, null, null);
+		database.delete(Constants.TABLE_NEWS, null, null);
 	}
 
 	private News cursorToNews(Cursor cursor) {

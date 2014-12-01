@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.eldorado.newsfeed.constants.Constants;
 import com.eldorado.newsfeed.database.NewsSQLiteHelper;
 import com.eldorado.newsfeed.model.Channel;
 
@@ -17,8 +18,8 @@ public class ChannelDAO {
 	// Database fields
 	private SQLiteDatabase database;
 	private NewsSQLiteHelper dbHelper;
-	private String[] allColumns = { NewsSQLiteHelper.KEY_ID,
-			NewsSQLiteHelper.KEY_NAME };
+	private String[] allColumns = { Constants.KEY_ID,
+			Constants.KEY_NAME };
 
 	public ChannelDAO(Context context) {
 		dbHelper = new NewsSQLiteHelper(context);
@@ -34,11 +35,11 @@ public class ChannelDAO {
 
 	public Channel createChannel(String name) {
 		ContentValues values = new ContentValues();
-		values.put(NewsSQLiteHelper.KEY_NAME, name);
-		long insertId = database.insert(NewsSQLiteHelper.TABLE_CHANNEL, null,
+		values.put(Constants.KEY_NAME, name);
+		long insertId = database.insert(Constants.TABLE_CHANNEL, null,
 				values);
-		Cursor cursor = database.query(NewsSQLiteHelper.TABLE_CHANNEL,
-				allColumns, NewsSQLiteHelper.KEY_ID + " = " + insertId, null,
+		Cursor cursor = database.query(Constants.TABLE_CHANNEL,
+				allColumns, Constants.KEY_ID + " = " + insertId, null,
 				null, null, null);
 		cursor.moveToFirst();
 		Channel newChannel = cursorToChannel(cursor);
@@ -49,14 +50,14 @@ public class ChannelDAO {
 	public void deleteComment(Channel channel) {
 		long id = channel.getId();
 		System.out.println("Comment deleted with id: " + id);
-		database.delete(NewsSQLiteHelper.TABLE_CHANNEL, NewsSQLiteHelper.KEY_ID
+		database.delete(Constants.TABLE_CHANNEL, Constants.KEY_ID
 				+ " = " + id, null);
 	}
 
 	public List<Channel> getAllChannels() {
 		List<Channel> channels = new ArrayList<Channel>();
 
-		Cursor cursor = database.query(NewsSQLiteHelper.TABLE_CHANNEL,
+		Cursor cursor = database.query(Constants.TABLE_CHANNEL,
 				allColumns, null, null, null, null, null);
 
 		cursor.moveToFirst();
@@ -71,7 +72,7 @@ public class ChannelDAO {
 	}
 	
 	public void deleteTableContent() {
-		database.delete(NewsSQLiteHelper.TABLE_CHANNEL, null, null);
+		database.delete(Constants.TABLE_CHANNEL, null, null);
 	}
 
 	private Channel cursorToChannel(Cursor cursor) {

@@ -9,16 +9,12 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Xml;
 
+import com.eldorado.newsfeed.constants.Constants;
 import com.eldorado.newsfeed.model.Channel;
 import com.eldorado.newsfeed.model.News;
 
 public class NewsPullParser {
-	static final String KEY_ITEM = "item";
-	static final String KEY_CHANNEL = "channel";
-	static final String KEY_RSS = "rss";
-	static final String KEY_TITLE = "title";
-	static final String KEY_CATEGORY = "category";
-	static final String KEY_PUBDATE = "pubDate";
+	
 	private static final String ns = null;
 
 	public ArrayList<Channel> parse(InputStream in) throws XmlPullParserException,
@@ -37,14 +33,14 @@ public class NewsPullParser {
 	private ArrayList<Channel> readRss(final XmlPullParser parser)
 			throws XmlPullParserException, IOException {
 		ArrayList<Channel> channel = new ArrayList<>();
-		parser.require(XmlPullParser.START_TAG, ns, KEY_RSS);
+		parser.require(XmlPullParser.START_TAG, ns, Constants.KEY_RSS);
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
 				continue;
 			}
 			String name = parser.getName();
 			// Starts by looking for the entry tag
-			if (name.equalsIgnoreCase(KEY_CHANNEL)) {
+			if (name.equalsIgnoreCase(Constants.KEY_CHANNEL)) {
 				channel.addAll(makeChannel(readChannel(parser)));
 			} else {
 				skip(parser);
@@ -68,14 +64,14 @@ public class NewsPullParser {
 	private ArrayList<News> readChannel(final XmlPullParser parser)
 			throws XmlPullParserException, IOException {
 		ArrayList<News> entries = new ArrayList<News>();
-		parser.require(XmlPullParser.START_TAG, ns, KEY_CHANNEL);
+		parser.require(XmlPullParser.START_TAG, ns, Constants.KEY_CHANNEL);
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
 				continue;
 			}
 			String name = parser.getName();
 			// Starts by looking for the entry tag
-			if (name.equalsIgnoreCase(KEY_ITEM)) {
+			if (name.equalsIgnoreCase(Constants.KEY_ITEM)) {
 				entries.add(readItem(parser));
 			} else {
 				skip(parser);
@@ -86,7 +82,7 @@ public class NewsPullParser {
 
 	private News readItem(XmlPullParser parser) throws XmlPullParserException,
 			IOException {
-		parser.require(XmlPullParser.START_TAG, ns, KEY_ITEM);
+		parser.require(XmlPullParser.START_TAG, ns, Constants.KEY_ITEM);
 		String title = null;
 		String category = null;
 		String hour = null;
@@ -96,12 +92,12 @@ public class NewsPullParser {
 				continue;
 			}
 			String name = parser.getName();
-			if (name.equalsIgnoreCase(KEY_TITLE)) {
-				title = readTag(parser, KEY_TITLE);
-			} else if (name.equalsIgnoreCase(KEY_CATEGORY)) {
-				category = readTag(parser, KEY_CATEGORY);
-			} else if (name.equalsIgnoreCase(KEY_PUBDATE)) {
-				hour = readTag(parser, KEY_PUBDATE);
+			if (name.equalsIgnoreCase(Constants.KEY_TITLE)) {
+				title = readTag(parser, Constants.KEY_TITLE);
+			} else if (name.equalsIgnoreCase(Constants.KEY_CATEGORY)) {
+				category = readTag(parser, Constants.KEY_CATEGORY);
+			} else if (name.equalsIgnoreCase(Constants.KEY_PUBDATE)) {
+				hour = readTag(parser, Constants.KEY_PUBDATE);
 			} else {
 				skip(parser);
 			}

@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.eldorado.newsfeed.constants.Constants;
 import com.eldorado.newsfeed.dao.ChannelDAO;
 import com.eldorado.newsfeed.dao.NewsDAO;
 import com.eldorado.newsfeed.model.Channel;
@@ -40,7 +41,7 @@ public class MainActivity extends Activity {
 	private NewsDAO newsDao;
 
 	// URL to get contacts JSON
-	private static String url = "http://www.melhordovolei.com.br/index.php/noticias/nacional?format=feed";
+	
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -70,7 +71,7 @@ public class MainActivity extends Activity {
 		public void onRefresh() {
 
 			if (isNetworkAvailable()) {
-				new GetNews().execute(url);
+				new GetNews().execute(Constants.url);
 
 			} else {
 				// mAdapter = new SitesAdapter(getApplicationContext(), -1,
