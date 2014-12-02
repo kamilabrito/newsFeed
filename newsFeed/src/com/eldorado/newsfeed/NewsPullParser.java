@@ -1,5 +1,11 @@
 package com.eldorado.newsfeed;
 
+/**
+ * Class for XMl parser 
+ * 
+ * @author kamilabrito
+ */
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,6 +36,7 @@ public class NewsPullParser {
 		}
 	}
 
+	// read rss tag 
 	private ArrayList<Channel> readRss(final XmlPullParser parser)
 			throws XmlPullParserException, IOException {
 		ArrayList<Channel> channel = new ArrayList<>();
@@ -49,6 +56,7 @@ public class NewsPullParser {
 		return channel;
 	}
 	
+	//create a channel list objects
 	private ArrayList <Channel> makeChannel (ArrayList <News> news) {
 		ArrayList<Channel> channel = new ArrayList<>();
 		for (int i = 0; i < news.size(); i++) {
@@ -61,6 +69,7 @@ public class NewsPullParser {
 		
 	}
 	
+	//read channel tag
 	private ArrayList<News> readChannel(final XmlPullParser parser)
 			throws XmlPullParserException, IOException {
 		ArrayList<News> entries = new ArrayList<News>();
@@ -80,6 +89,7 @@ public class NewsPullParser {
 		return entries;
 	}
 
+	//read item tag
 	private News readItem(XmlPullParser parser) throws XmlPullParserException,
 			IOException {
 		parser.require(XmlPullParser.START_TAG, ns, Constants.KEY_ITEM);
@@ -105,7 +115,7 @@ public class NewsPullParser {
 		return new News(title, category, hour);
 	}
 
-	// Processes title tags in the feed.
+	// Processes tags in the item
 	private String readTag(XmlPullParser parser, String Key)
 			throws IOException, XmlPullParserException {
 		parser.require(XmlPullParser.START_TAG, ns, Key);
@@ -114,6 +124,7 @@ public class NewsPullParser {
 		return title;
 	}
 
+	//get text content from the tag
 	private String readText(XmlPullParser parser) throws IOException,
 			XmlPullParserException {
 		String result = "";
@@ -124,6 +135,7 @@ public class NewsPullParser {
 		return result;
 	}
 
+	//skip unwanted tags
 	private void skip(XmlPullParser parser) throws XmlPullParserException,
 			IOException {
 		if (parser.getEventType() != XmlPullParser.START_TAG) {

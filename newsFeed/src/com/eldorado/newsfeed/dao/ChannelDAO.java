@@ -1,6 +1,19 @@
 package com.eldorado.newsfeed.dao;
 
+/**
+ * Dao for table channel
+ * 
+ * @author kamilabrito
+ */
+
+
 import java.util.ArrayList;
+
+/**
+ * Dao for table channel
+ * 
+ * @author kamilabrito
+ */
 import java.util.List;
 
 import android.content.ContentValues;
@@ -15,7 +28,6 @@ import com.eldorado.newsfeed.model.Channel;
 
 public class ChannelDAO {
 
-	// Database fields
 	private SQLiteDatabase database;
 	private NewsSQLiteHelper dbHelper;
 	private String[] allColumns = { Constants.KEY_ID,
@@ -32,7 +44,8 @@ public class ChannelDAO {
 	public void close() {
 		dbHelper.close();
 	}
-
+	
+	//insert object on channel table
 	public Channel createChannel(String name) {
 		ContentValues values = new ContentValues();
 		values.put(Constants.KEY_NAME, name);
@@ -46,14 +59,16 @@ public class ChannelDAO {
 		cursor.close();
 		return newChannel;
 	}
-
-	public void deleteComment(Channel channel) {
+	
+	//delete a specific channel object
+	public void deleteChannel(Channel channel) {
 		long id = channel.getId();
 		System.out.println("Comment deleted with id: " + id);
 		database.delete(Constants.TABLE_CHANNEL, Constants.KEY_ID
 				+ " = " + id, null);
 	}
 
+	//return list with all the content from channel table
 	public List<Channel> getAllChannels() {
 		List<Channel> channels = new ArrayList<Channel>();
 
@@ -66,11 +81,11 @@ public class ChannelDAO {
 			channels.add(channel);
 			cursor.moveToNext();
 		}
-		// make sure to close the cursor
 		cursor.close();
 		return channels;
 	}
 	
+	//delete ALL table content
 	public void deleteTableContent() {
 		database.delete(Constants.TABLE_CHANNEL, null, null);
 	}

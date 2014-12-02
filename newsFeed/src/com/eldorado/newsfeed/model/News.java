@@ -1,5 +1,11 @@
 package com.eldorado.newsfeed.model;
 
+/**
+ * Class to determinate news object
+ * 
+ * @author kamilabrito
+ */
+
 public class News {
 	
 	private String title;

@@ -4,8 +4,9 @@
     <string name="app_name">newsFeed</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    
-     <string name="connection_error">Connection error</string>
-     <string name="xml_error">Xml error</string>
-
+    <string name="news">Notícias</string>
+    <string name="no_internet">Sem conexão com a internet</string>
+    <string name="days">Dias</string>
+    <string name="minutes">Minutos</string>
+    <string name="hours">Horas</string>
 </resources>

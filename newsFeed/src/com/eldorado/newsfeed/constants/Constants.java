@@ -1,5 +1,12 @@
 package com.eldorado.newsfeed.constants;
 
+/**
+ * Constants file
+ * 
+ * @author kamilabrito
+ */
+
+
 public class Constants {
 	
 	

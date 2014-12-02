@@ -1,5 +1,11 @@
 package com.eldorado.newsfeed.model;
 
+/**
+ * Class to determinate channel object
+ * @author kamilabrito
+ *
+ */
+
 public class Channel {
 	
 	private News item;

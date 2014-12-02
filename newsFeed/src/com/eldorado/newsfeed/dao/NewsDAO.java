@@ -1,7 +1,12 @@
 package com.eldorado.newsfeed.dao;
 
+/**
+ * Dao for table news
+ * 
+ * @author kamilabrito
+ */
+
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,12 +16,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.eldorado.newsfeed.constants.Constants;
 import com.eldorado.newsfeed.database.NewsSQLiteHelper;
-import com.eldorado.newsfeed.model.Channel;
 import com.eldorado.newsfeed.model.News;
 
 public class NewsDAO {
 
-	// Database fields
 	private SQLiteDatabase database;
 	private NewsSQLiteHelper dbHelper;
 	private String[] allColumns = {Constants.KEY_TITLE, Constants.KEY_CATEGORY, Constants.KEY_HOUR_COLUMN};
@@ -33,6 +36,7 @@ public class NewsDAO {
 		dbHelper.close();
 	}
 
+	//insert news objects in database
 	public News createNews(String title, String category, String hour) {
 		ContentValues values = new ContentValues();
 		values.put(Constants.KEY_TITLE, title);
@@ -68,7 +72,6 @@ public class NewsDAO {
 			newss.add(news);
 			cursor.moveToNext();
 		}
-		// make sure to close the cursor
 		cursor.close();
 		return newss;
 	}

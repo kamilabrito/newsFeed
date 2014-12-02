@@ -1,14 +1,20 @@
 package com.eldorado.newsfeed;
 
+/**
+ * Main activity
+ * 
+ * @author kamilabrito
+ */
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -17,10 +23,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.eldorado.newsfeed.constants.Constants;
 import com.eldorado.newsfeed.dao.ChannelDAO;
@@ -30,9 +36,7 @@ import com.eldorado.newsfeed.model.News;
 
 public class MainActivity extends Activity {
 
-	// private ProgressDialog pDialog;
 	private SwipeRefreshLayout swipeLayout;
-	JSONArray newsChannel = null;
 	private NewsAdapter mAdapter;
 	private ListView listView;
 	private ArrayList<Channel> channel;
@@ -40,14 +44,14 @@ public class MainActivity extends Activity {
 	private ChannelDAO channelDao;
 	private NewsDAO newsDao;
 
-	// URL to get contacts JSON
-	
-
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		ActionBar actionBar = this.getActionBar();
+		actionBar.setTitle(R.string.news); 
 		
 		channelDao = new ChannelDAO(this);
 		channelDao.open();
@@ -56,13 +60,38 @@ public class MainActivity extends Activity {
 		newsDao.open();
 
 		listView = (ListView) findViewById(R.id.list);
-
+		listView.setDividerHeight(0);
+		listView.setDivider(null);
+		
 		swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
 		swipeLayout.setOnRefreshListener(onRefreshListener);
 		swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
 				android.R.color.holo_green_light,
 				android.R.color.holo_orange_light,
 				android.R.color.holo_red_light);
+		
+		//load content from database
+		mAdapter = new NewsAdapter(MainActivity.this, -1,readFromDataBase());
+		listView.setAdapter(mAdapter);
+		
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (swipeLayout.isRefreshing()) {
+			if (swipeLayout.isRefreshing()) {
+				swipeLayout.setRefreshing(false);
+			}
+		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		//load content from database
+		mAdapter = new NewsAdapter(MainActivity.this, -1,readFromDataBase());
+		listView.setAdapter(mAdapter);
 	}
 	
 	private OnRefreshListener onRefreshListener = new OnRefreshListener() {
@@ -74,9 +103,13 @@ public class MainActivity extends Activity {
 				new GetNews().execute(Constants.url);
 
 			} else {
-				// mAdapter = new SitesAdapter(getApplicationContext(), -1,
-				// SitesXmlPullParser.getStackSitesFromFile(MainActivity.this));
-				// sitesList.setAdapter(mAdapter);
+				 mAdapter = new NewsAdapter(MainActivity.this, -1,readFromDataBase());
+				 listView.setAdapter(mAdapter);
+				 Toast.makeText(getApplicationContext(), getApplication().getString(R.string.no_internet),
+						   Toast.LENGTH_LONG).show();
+				 if (swipeLayout.isRefreshing()) {
+						swipeLayout.setRefreshing(false);
+				}
 			}
 		}
 	};
@@ -90,9 +123,6 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
@@ -100,9 +130,6 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * Async task class to get json by making HTTP call
-	 * */
 	private class GetNews extends AsyncTask<String, Void, String> {
 
 		@Override
@@ -119,24 +146,23 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 			saveToDataBase();
-			// Dismiss the progress dialog
 			if (swipeLayout.isRefreshing()) {
 				swipeLayout.setRefreshing(false);
 			}
 			 mAdapter = new NewsAdapter(MainActivity.this, -1,readFromDataBase());
 			 listView.setAdapter(mAdapter);
-			 
-			 readFromDataBase();
 		}
 
 	}
 	
+	//retrieve database content
 	private ArrayList<News> readFromDataBase() {
 		ArrayList<News> newss = new ArrayList<>(); 
 		newss = newsDao.getAllNews();
 		return newss;
 	}
 	
+	//update database content
 	private void saveToDataBase() {
 		newsDao.deleteTableContent();
 		channelDao.deleteTableContent();
@@ -147,6 +173,7 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	//check internet connection
 	private boolean isNetworkAvailable() {
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager
@@ -165,24 +192,18 @@ public class MainActivity extends Activity {
 			try {
 				stream = downloadUrl(urlString);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			channel = newsParser.parse(stream);
-			// Makes sure that the InputStream is closed after the app is
-			// finished using it.
 		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (stream != null) {
 				try {
 					stream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -190,16 +211,13 @@ public class MainActivity extends Activity {
 		return " ";
 	}
 
-	// Given a string representation of a URL, sets up a connection and gets
-	// an input stream.
 	private InputStream downloadUrl(String urlString) throws IOException {
 		URL url = new URL(urlString);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setReadTimeout(10000 /* milliseconds */);
-		conn.setConnectTimeout(15000 /* milliseconds */);
+		conn.setReadTimeout(10000);
+		conn.setConnectTimeout(15000);
 		conn.setRequestMethod("GET");
 		conn.setDoInput(true);
-		// Starts the query
 		conn.connect();
 		return conn.getInputStream();
 	}

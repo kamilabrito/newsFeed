@@ -1,5 +1,11 @@
 package com.eldorado.newsfeed.database;
 
+/**
+ * Class to create database and database tables
+ * 
+ * @author kamilabrito
+ */
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -7,11 +13,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.eldorado.newsfeed.constants.Constants;
 
 public class NewsSQLiteHelper extends SQLiteOpenHelper {
-	 
+	
+	//string to create channel table 
     private static final String CREATE_TABLE_CHANNEL = "CREATE TABLE "
             + Constants.TABLE_CHANNEL + "(" + Constants.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + Constants.KEY_NAME
             + " TEXT NOT NULL);";
-
+    //string to create channel table
     private static final String CREATE_TABLE_NEWS = "CREATE TABLE "
             + Constants.TABLE_NEWS + "(" + Constants.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + Constants.KEY_TITLE
             + " TEXT," + Constants.KEY_CATEGORY + " TEXT," + Constants.KEY_HOUR_COLUMN + " TEXT);";
